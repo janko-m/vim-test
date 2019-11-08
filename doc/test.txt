@@ -290,6 +290,8 @@ Runs test commands with `:terminal`, which spawns a terminal inside Neovim.
 Vim8 Terminal ~
 
 Runs test commands with `term_start()`, which spawns a terminal inside Vim.
+
+Provides a `:TestClose` command to close the window.
 >
   let test#strategy = 'vimterminal'
 <
