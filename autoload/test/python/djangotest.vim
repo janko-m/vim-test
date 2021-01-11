@@ -33,7 +33,15 @@ function! test#python#djangotest#build_args(args) abort
 endfunction
 
 function! test#python#djangotest#executable() abort
-  return 'python manage.py test'
+  let pipenv_prefix = ""
+
+  if filereadable("Pipfile")
+    let pipenv_prefix = "pipenv run "
+  elseif filereadable("poetry.lock")
+    let pipenv_prefix = "poetry run "
+  endif
+
+  return pipenv_prefix . "python manage.py test"
 endfunction
 
 function! s:get_import_path(filepath) abort
