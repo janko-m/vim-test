@@ -1,3 +1,4 @@
 Flavorfile.lock
 .vim-flavor/
 /doc/tags
+*.sw*
