@@ -7,7 +7,7 @@ function! test#python#pyunit#test_file(file) abort
     if exists('g:test#python#runner')
       return g:test#python#runner ==# 'pyunit'
     else
-      return executable('python')
+      return executable('python3')
     endif
   endif
 endfunction
