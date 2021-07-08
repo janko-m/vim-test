@@ -16,17 +16,17 @@ describe "PyUnitTest"
     view +2 module/test_class.py
     TestNearest
 
-    Expect g:test#last_command == 'python -m unittest module.test_class.TestNumbers.test_numbers'
+    Expect g:test#last_command == 'python3 -m unittest module.test_class.TestNumbers.test_numbers'
 
     view +5 module/test_class.py
     TestNearest
 
-    Expect g:test#last_command == 'python -m unittest module.test_class.TestSubclass'
+    Expect g:test#last_command == 'python3 -m unittest module.test_class.TestSubclass'
 
     view +1 module/test_class.py
     TestNearest
 
-    Expect g:test#last_command == 'python -m unittest module.test_class.TestNumbers'
+    Expect g:test#last_command == 'python3 -m unittest module.test_class.TestNumbers'
 
     view +15 module/test_class.py
     TestNearest
@@ -36,7 +36,7 @@ describe "PyUnitTest"
     view +1 module/test_method.py
     TestNearest
 
-    Expect g:test#last_command == 'python -m unittest module.test_method.test_numbers'
+    Expect g:test#last_command == 'python3 -m unittest module.test_method.test_numbers'
   end
 
   it "runs file test if nearest test couldn't be found"
@@ -44,21 +44,21 @@ describe "PyUnitTest"
     normal O
     TestNearest
 
-    Expect g:test#last_command == 'python -m unittest module.test_method'
+    Expect g:test#last_command == 'python3 -m unittest module.test_method'
   end
 
   it "runs file tests"
     view module/test_class.py
     TestFile
 
-    Expect g:test#last_command == 'python -m unittest module.test_class'
+    Expect g:test#last_command == 'python3 -m unittest module.test_class'
   end
 
   it "runs test suites"
     view test_class.py
     TestSuite
 
-    Expect g:test#last_command == 'python -m unittest'
+    Expect g:test#last_command == 'python3 -m unittest'
   end
 
 end
