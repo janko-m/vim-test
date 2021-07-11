@@ -7,3 +7,11 @@ tap.test("parent", function(t) {
     })
     t.end()
 })
+
+tap.test(
+    'An example of a multi-line test',
+    function(t) {
+        t.ok(1)
+        t.end()
+    }
+);

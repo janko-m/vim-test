@@ -57,7 +57,7 @@ endfunction
 
 function! s:nearest_test(position) abort
   let patterns = {
-        \ 'test': ['\v^\s*%(%(%(tap|t)\.)?test)\s*[( ]\s*%("|''|`)(.*)%("|''|`)'],
+        \ 'test': ['\v^\s*%(%(%(tap|t)\.)?test)[(]\_s*%("|''|`)(.*)%("|''|`)'],
         \ 'namespace': [],
         \}
   let name = test#base#nearest_test(a:position, patterns)

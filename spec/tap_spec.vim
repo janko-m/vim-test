@@ -26,6 +26,11 @@ describe "TAP"
     TestNearest
 
     Expect g:test#last_command == "node_modules/.bin/tape tests/subtest.js --grep='subtest'"
+
+    view +12 tests/subtest.js
+    TestNearest
+
+    Expect g:test#last_command == "node_modules/.bin/tape tests/subtest.js --grep='An example of a multi-line test'"
   end
 
   it "runs file tests"
