@@ -575,6 +575,42 @@ You can disable this integration by doing
 let g:test#no_alternate = 1
 ```
 
+It is also possible to configure test runners via projectionist. All you 
+need is to add a `test-runner` key to the projectionist configuration. 
+The value for `test-runner` has to be a dictionary containing the target
+languages as keys and either the name of the runner or an dictionary 
+with additional configuration as value.
+
+Here an example:
+
+```json
+{
+  "gradle/*Test.java": {
+    "test-runner": {
+      "java": {
+        "runner": "gradletest",
+        "options": {
+          'nearest': '--backtrace' 
+        }
+      }
+    }
+  },
+  "mvn/*VerboseTest.java": {
+    "test-runner": {
+      "java": {
+        "runner": "maventest",
+        "options": "--verbose" 
+       }
+    }
+  },
+  "mvn/*Test.java": {
+    "test-runner": {
+      "java": "maventest" 
+    }
+  }
+}
+```
+
 ## Extending
 
 If you wish to extend this plugin with your own test runners, first of all,

@@ -3,16 +3,15 @@ function! test#run(type, arguments) abort
 
   let alternate_file = s:alternate_file()
 
-  if test#test_file(expand('%'))
-    let position = s:get_position(expand('%'))
-    let g:test#last_position = position
-  elseif !empty(alternate_file) && test#test_file(alternate_file) && (!exists('g:test#last_position') || alternate_file !=# g:test#last_position['file'])
-    let position = s:get_position(alternate_file)
-  elseif exists('g:test#last_position')
-    let position = g:test#last_position
-  else
-    call s:echo_failure('Not a test file') | return
+  let position_result = s:determine_position_and_file(alternate_file)
+  
+  if empty(position_result)
+    return
   endif
+
+  let [runner_file, position] = position_result
+
+  call s:set_test_runners(runner_file)
 
   let runner = test#determine_runner(position['file'])
 
@@ -28,6 +27,34 @@ function! test#run(type, arguments) abort
   endif
 
   call s:after_run()
+endfunction
+
+function! s:determine_position_and_file(alternate_file) abort
+  call s:set_test_runners(expand('%:p'))
+
+  if test#test_file(expand('%'))
+    let position = s:get_position(expand('%'))
+    let g:test#last_position = position
+    return [expand('%:p'), position]
+  endif
+
+  if !empty(a:alternate_file)
+    call s:set_test_runners(a:alternate_file)
+
+    if test#test_file(a:alternate_file) && (!exists('g:test#last_position') || a:alternate_file !=# g:test#last_position['file'])
+      let position = s:get_position(a:alternate_file)
+
+      return [a:alternate_file, position]
+    endif
+  endif
+
+  if exists('g:test#last_position')
+    call s:set_test_runners(expand('%:p'))
+    let position = g:test#last_position
+    return [expand('%:p'), position]
+  endif
+
+  call s:echo_failure('Not a test file') 
 endfunction
 
 function! test#run_last(arguments) abort
@@ -141,6 +168,55 @@ endfunction
 
 function! test#test_file(file) abort
   return !empty(test#determine_runner(a:file))
+endfunction
+
+function! s:set_test_runners(file) abort 
+  if !exists('g:loaded_projectionist')
+    return
+  endif 
+
+  let result = projectionist#query('test-runner', {'file': a:file})
+
+  if empty(result)
+    return
+  endif
+
+  let runner_map = get(get(result, 0, []), 1, {})
+
+  if type(runner_map) !=# type({})
+    call s:echo_failure('Value of `test-runner` key must be a map!')
+    return
+  endif
+
+  for [language, value] in items(runner_map)
+    if type(value) == type('')
+      let g:['test#' . language . '#runner'] = value
+
+      let target_key = 'test#' . language . '#' . value . '#options'
+
+      if exists(target_key)
+        unlet g:[target_key]
+      endif
+    endif
+
+    if type(value) == type({})
+      let runner = value['runner']
+
+      if empty(runner)
+        continue
+      endif
+
+      let g:['test#' . language . '#runner'] = runner
+
+      if has_key(value, 'options')
+        let options = value['options']
+        let g:['test#' . language . '#' . runner . '#options'] = options
+      else
+        unlet b:['test#' . language . '#' . runner . '#options']
+      endif
+    endif
+  endfor
+
 endfunction
 
 function! s:alternate_file() abort
